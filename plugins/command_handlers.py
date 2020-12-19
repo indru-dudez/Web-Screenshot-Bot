@@ -18,12 +18,12 @@ LOGGER.setLevel(10)
 
 BLACKLIST = ['drive.google.com', 'tor.checker.in', 'youtube.com', 'youtu.be']
 HOME = InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='Format - PDF', callback_data='format')],
-            [InlineKeyboardButton(text='Page - Full', callback_data="page")],
+            [InlineKeyboardButton(text='Format = PDF', callback_data='format')],
+            [InlineKeyboardButton(text='Page = Full', callback_data="page")],
             # [InlineKeyboardButton(text='Landscape', callback_data="orientation")],
-            [InlineKeyboardButton(text='show additional options ˅', callback_data="options")],
-            [InlineKeyboardButton(text='▫️ start render ▫️', callback_data="render")],
-            [InlineKeyboardButton(text='cancel', callback_data="cancel")]
+            [InlineKeyboardButton(text='🛠 Show Additional Options 🛠', callback_data="options")],
+            [InlineKeyboardButton(text='✅ Start Process ✅', callback_data="render")],
+            [InlineKeyboardButton(text='Cancel', callback_data="cancel")]
                             ])
 
 
@@ -31,11 +31,11 @@ HOME = InlineKeyboardMarkup([
 async def start(_: Client, message: Message) -> None:
     LOGGER.debug(f"USED_CMD --> /start command >> @{message.from_user.username}")
     await message.reply_text(
-        f"<b>Hi {message.from_user.first_name} 👋\n"
-        "I can render website of a given link to either PDF or PNG/JPEG</b>",
+        f"<b>Hi, {message.from_user.first_name}.\n"
+        "I can read webpage of a given link and send PDF or PNG or JPEG of Webpage to your!</b>",
         quote=True,
         reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("❓ About", callback_data="about_cb")
+                InlineKeyboardButton("About", callback_data="about_cb")
             ]
         ])
     )
@@ -45,14 +45,14 @@ async def start(_: Client, message: Message) -> None:
 async def feedback(_: Client, message: Message) -> None:
     LOGGER.debug(f"USED_CMD --> /about command >> @{message.from_user.username}")
     await message.reply_text(
-        text="This project is open ❤️ source",
+        text="<b>I can read webpage of a given link and send PDF or PNG or JPEG of Webpage to your!</b>",
         reply_markup=InlineKeyboardMarkup([
             [
-                InlineKeyboardButton("👨🏻‍🦯 Source", url="https://github.com/alenpaul2001/Web-Screenshot-Bot"),
-                InlineKeyboardButton("❓ Bug Report", url="https://github.com/alenpaul2001/Web-Screenshot-Bot/issues")],
+                InlineKeyboardButton("Developer 💻", url="https://t.me/AbirHasan2005"),
+                InlineKeyboardButton("Support Group 💬", url="https://t.me/linux_repo")],
             [InlineKeyboardButton(
-                "🌃 Profile Icon Credit",
-                url="https://www.goodfon.com/wallpaper/art-vector-background-illustration-minimalism-angga-tanta-12.html")]
+                "Telegram Bots Updates",
+                url="https://t.me/Discovery_Updates")]
             ])
     )
 
@@ -66,7 +66,7 @@ async def delete(_: Client, message: Message) -> None:
         LOGGER.debug('DEL__CMD --> status failed >> user not a sudo')
         return
     if message.from_user.id == sudo_user:
-        random_message = await message.reply_text('Processing')
+        random_message = await message.reply_text('Processing ...')
         LOGGER.debug('DEL__CMD --> status pending >> sudo user found processing')
         if os.path.isdir('./FILES/'):
             with open('walk.txt', 'w') as writer:
@@ -81,7 +81,7 @@ async def delete(_: Client, message: Message) -> None:
                 os.remove('walk.txt')
                 LOGGER.debug('DEL__CMD --> status pending >> waiting for user confirmation')
                 await message.reply_text(
-                    text='Do you want to delete?',
+                    text='Do you really want to delete?',
                     reply_markup=InlineKeyboardMarkup([
                         [InlineKeyboardButton(text='Yes', callback_data='deleteyes')],
                         [InlineKeyboardButton(text='No', callback_data='deleteno')],
@@ -107,4 +107,4 @@ async def send_log(_: Client, message: Message) -> None:
         )
         LOGGER.debug('LOG__CMD --> status sucess >> log send to the sudo_user')
     else:
-        await message.reply_text("file not found")
+        await message.reply_text("File not found!")
