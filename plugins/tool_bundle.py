@@ -53,7 +53,7 @@ class Printer(object):
 
     def __str__(self):
         res = f'{self.resolution["width"]}+{self.resolution["height"]}'
-        return f'({self.type}|{res}|{self.fullpage})\n```{self.link}```'
+        return f'({self.type} | {res} | {self.fullpage})\nWebsite: ```{self.link}```'
 
     @property
     def arguments_to_print(self) -> dict:
@@ -142,7 +142,7 @@ async def draw(name: str, metrics: dict) -> io.BytesIO:
     draw = ImageDraw.Draw(font_paper)
     w, h = font.getsize(name)
     draw.text(((265-w)/2, (100-h)/2), name, font=font, fill="black")
-    main_paper = Image.open(io.BytesIO(get("https://telegra.ph/file/a6a7f2e40b5ef8b1e0562.png").content))
+    main_paper = Image.open(io.BytesIO(get("https://telegra.ph/file/ef6e9561a25b9b25c7bba.png").content))
     LOGGER.info('WEB_SCRS --> site_metrics >> main paper created')
     await asyncio.sleep(0.2)
     main_paper.paste(font_paper, (800, 460, 1065, 560))
@@ -276,10 +276,10 @@ async def primary_task(client: Client, msg: Message, queue=[]) -> None:
         LOGGER.debug(f'WEB_SCRS:{printer.PID} --> LOG GROUP FOUND >> sending log')
         await client.send_message(
             log,
-            f'```{msg.chat.username}```\n{printer.__str__()}')
+            f'#WEBSS:\n\n@{msg.chat.username} got {printer.__str__()}') #Channel Logger
     except Exception as e:
         LOGGER.debug(f'WEB_SCRS:{printer.PID} --> LOGGING FAILED >> {e}')
-    await random_message.edit(text='<b><i>rendering.</b></i>')
+    await random_message.edit(text='<b><i>Reading Webpage ...</b></i>')
     # await browser.close()
     try:
         out = io.BytesIO(await screenshot_driver(printer))
@@ -288,7 +288,7 @@ async def primary_task(client: Client, msg: Message, queue=[]) -> None:
         await random_message.edit(f'<b>{e}</b>')
         queue.remove(link)
         return
-    await random_message.edit(text='<b><i>rendering..</b></i>')
+    await random_message.edit(text='<b><i>Reading Webpage ...</b></i>')
     if printer.split and printer.fullpage:
         LOGGER.debug(f'WEB_SCRS:{printer.PID} --> split setting detected -> spliting images')
         await random_message.edit(text='<b><i>Spliting Images ...</b></i>')
