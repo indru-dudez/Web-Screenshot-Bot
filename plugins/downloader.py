@@ -72,7 +72,7 @@ async def cb_(client: Client, callback_query: CallbackQuery, retry=False):
         else:
             index_number = 2
         current_page = msg.reply_markup.inline_keyboard[index_number][0]
-        page_to_change = "Page - Partial" if "Full" in current_page.text else "Page - Full"
+        page_to_change = "Page = Partial" if "Full" in current_page.text else "Page = Full"
         msg.reply_markup.inline_keyboard[index_number][0]['text'] = page_to_change
         await msg.edit(text='Choose prefered settings from below 👇', reply_markup=msg.reply_markup)
 
