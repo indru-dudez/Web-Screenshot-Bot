@@ -49,7 +49,7 @@ class Printer(object):
         self.PID = _pid
         self.fullpage = True
         self.split = False
-        self.name = f"@Webs-Screenshot.{self.type}"
+        self.name = f"[@WebpageCaptureBot].{self.type}"
 
     def __str__(self):
         res = f'{self.resolution["width"]}+{self.resolution["height"]}'
@@ -98,9 +98,9 @@ async def split_func(out: io.BytesIO, _format: str) -> List[io.BytesIO]:
         upper += slice_size
         # saving = the slice
         if 'jpeg' in _format:
-            location_to_save_slice = f'@Webs.ScreenCapture-{str(count)}.jpeg'
+            location_to_save_slice = f'[@WebpageCaptureBot]-{str(count)}.jpeg'
         else:
-            location_to_save_slice = f'@Webs.ScreenCapture-{str(count)}.png'
+            location_to_save_slice = f'[@WebpageCaptureBot]-{str(count)}.png'
         split_out = io.BytesIO()
         split_out.name = location_to_save_slice
         working_slice.save(fp=split_out, format=_format)
@@ -118,7 +118,7 @@ async def zipper(location_of_image: List[io.BytesIO]) -> io.BytesIO:
         for files in location_of_image:
             zipper.writestr(files.name, files.getvalue())
             files.close()
-    zipped_file.name = "@Webs-Screenshot.zip"
+    zipped_file.name = "[@WebpageCaptureBot].zip"
     return zipped_file
 
 
@@ -155,7 +155,7 @@ async def draw(name: str, metrics: dict) -> io.BytesIO:
     return_object = io.BytesIO()
     main_paper.save(return_object, format='png')
     main_paper.close()
-    return_object.name = "@Webs-Screenshot.png"
+    return_object.name = "[@WebpageCaptureBot].png"
     return return_object
 
 
@@ -213,7 +213,7 @@ async def launch_chrome(retry=False) -> Browser:
             return await launch_chrome(True)
         elif retry:
             LOGGER.info('WEB_SCRS --> request failed -> Excepted BadStatusLine >> max retry exceeded')
-            raise ResponseNotReady("Soory the site is not responding")
+            raise ResponseNotReady("Sorry, the site is not responding!")
 
 
 async def screenshot_driver(printer: Printer, tasks=[]) -> Union[List, Tuple[str, dict]]:
@@ -268,7 +268,7 @@ async def primary_task(client: Client, msg: Message, queue=[]) -> None:
         await msg.edit("<b>You are in the queue wait for a bit ;)</b>")
         while len(queue) > 2:
             await asyncio.sleep(2)
-    random_message = await msg.edit(text='<b><i>processing...</b></i>')
+    random_message = await msg.edit(text='<b><i>Processing ...</b></i>')
     printer = await settings_parser(link, msg.reply_markup.inline_keyboard, _pid)
     # logging the request into a specific group or channel
     try:
@@ -291,13 +291,13 @@ async def primary_task(client: Client, msg: Message, queue=[]) -> None:
     await random_message.edit(text='<b><i>rendering..</b></i>')
     if printer.split and printer.fullpage:
         LOGGER.debug(f'WEB_SCRS:{printer.PID} --> split setting detected -> spliting images')
-        await random_message.edit(text='<b><i>spliting images...</b></i>')
+        await random_message.edit(text='<b><i>Spliting Images ...</b></i>')
         location_of_image = await split_func(out, printer.type)
         LOGGER.debug(f'WEB_SCRS:{printer.PID} --> image splited successfully')
         # spliting finished
         if len(location_of_image) > 10:
             LOGGER.debug(f'WEB_SCRS:{printer.PID} --> found split pieces more than 10 >> zipping file')
-            await random_message.edit(text='<b>detected images more than 10\n\n<i>Zipping...</i></b>')
+            await random_message.edit(text='<b>Detected images more than 10 !!\n\n<i>Zipping All ...</i></b>')
             await asyncio.sleep(0.1)
             # zipping if length is too high
             zipped_file = await zipper(location_of_image)
@@ -321,7 +321,7 @@ async def primary_task(client: Client, msg: Message, queue=[]) -> None:
                 with open(f'{location}/{byte_objects.name}', 'wb') as writer:
                     writer.write(byte_objects.getvalue())
                 byte_objects.close()
-            await random_message.edit(text='<b><i>uploading...</b></i>')
+            await random_message.edit(text='<b><i>Uploading ...</b></i>')
             location_to_send = []
             for count, images in enumerate(location_of_image, start=1):
                 location_to_send.append(InputMediaPhoto(
@@ -345,7 +345,7 @@ async def primary_task(client: Client, msg: Message, queue=[]) -> None:
             return
     if not printer.fullpage and not printer.type == 'pdf':
         LOGGER.debug(f'WEB_SCRS:{printer.PID} --> split setting not found >> sending directly')
-        await random_message.edit(text='<b><i>uploading...</b></i>')
+        await random_message.edit(text='<b><i>Uploading ...</b></i>')
         await client.send_chat_action(
             msg.chat.id,
             "upload_photo"
