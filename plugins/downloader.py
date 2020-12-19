@@ -45,7 +45,7 @@ async def cb_(client: Client, callback_query: CallbackQuery, retry=False):
     cb_data = callback_query.data
     msg = callback_query.message
     if (cb_data == "render"
-            or cb_data == 'Cancel' or cb_data == 'statics'):
+            or cb_data == 'cancel' or cb_data == 'statics'):
         pass
     else:
         # cause @Spechide said so
